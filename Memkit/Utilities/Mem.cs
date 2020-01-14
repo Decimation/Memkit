@@ -1,12 +1,15 @@
 using System;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using JetBrains.Annotations;
+using Memkit.Interop;
+using Memkit.Model;
+using Memkit.Pointers;
 
-namespace Memkit
+namespace Memkit.Utilities
 {
 	/// <summary>
 	///     Provides utilities for manipulating pointers, memory, and types. This class has
@@ -103,7 +106,14 @@ namespace Memkit
 			return value;
 		}
 
+		public static T ReadStructure<T>(this BinaryReader reader) where T : struct
+		{
+			// Read in a byte array
+			byte[] bytes = reader.ReadBytes(Marshal.SizeOf<T>());
 
+			return Mem.ReadStructure<T>(bytes);
+		}
+		
 		/*[NativeFunction]
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static T ReadFast<T>(void* source, int elemOfs)
@@ -224,12 +234,12 @@ namespace Memkit
 
 			switch (offset) {
 				case OffsetOptions.StringData:
-					Debug.Assert(Inspector.IsString(value));
+					Trace.Assert(Inspector.IsString(value));
 					offsetValue = Assets.OffsetToStringData;
 					break;
 
 				case OffsetOptions.ArrayData:
-					Debug.Assert(Inspector.IsArray(value));
+					Trace.Assert(Inspector.IsArray(value));
 					offsetValue = Assets.OffsetToArrayData;
 					break;
 
@@ -325,7 +335,7 @@ namespace Memkit
 			                                         ptrBuffer.Address, cb,
 			                                         out int numberOfBytesRead));
 
-			Debug.Assert(numberOfBytesRead == cb && ok);
+			Trace.Assert(numberOfBytesRead == cb && ok);
 
 			// Close the handle
 			Native.CloseHandle(hProc);
@@ -378,7 +388,7 @@ namespace Memkit
 			                                          dwSize, out int numberOfBytesWritten));
 
 
-			Debug.Assert(numberOfBytesWritten == dwSize && ok);
+			Trace.Assert(numberOfBytesWritten == dwSize && ok);
 
 
 			// Close the handle

@@ -1,53 +1,17 @@
 using System;
-using System.ComponentModel;
-using System.Diagnostics;
 using System.Runtime.InteropServices;
 using JetBrains.Annotations;
+using Memkit.Model;
+using Memkit.Model.Attributes;
 
-namespace Memkit
+namespace Memkit.Interop
 {
-	public static partial class Native
-	{
-		public static Pointer<byte> GetCurrentProcess()
-		{
-			return GetCurrentProcessInternal();
-		}
-
-
-		public static void CloseHandle(Pointer<byte> ptr)
-		{
-			if (CloseHandleInternal(ptr.Address)) {
-				throw new Win32Exception();
-			}
-		}
-
-		internal static MemoryBasicInfo VirtualQuery(Pointer<byte> ptr)
-		{
-			var mbi     = new MemoryBasicInfo();
-			var bufSize = VirtualQueryInternal(ptr.Address, ref mbi, Marshal.SizeOf<MemoryBasicInfo>());
-			return mbi;
-		}
-
-		internal static void VirtualProtect(Pointer<byte>    address, int size,
-		                                    MemoryProtection newProtect)
-		{
-			if (!VirtualProtectInternal(address.Address, size, newProtect, out var oldProtect)) {
-				throw new Win32Exception();
-			}
-		}
-
-		internal static IntPtr OpenProcess(Process proc, ProcessAccess flags = ProcessAccess.All) =>
-			OpenProcessInternal(flags, false, proc.Id);
-
-		internal static IntPtr OpenCurrentProcess(ProcessAccess flags = ProcessAccess.All) =>
-			OpenProcess(Process.GetCurrentProcess(), flags);
-	}
-
 	/// <summary>
 	///     Contains information about a range of pages in the virtual address space of a process.
 	/// </summary>
-	[StructLayout(LayoutKind.Sequential), UsedImplicitly(ImplicitUseTargetFlags.WithMembers)]
-	public readonly struct MemoryBasicInfo
+	[NativeStructure]
+	[StructLayout(LayoutKind.Sequential)]
+	public struct MemoryBasicInfo : INativeStructure
 	{
 		/// <summary>
 		///     A pointer to the base address of the region of pages.
@@ -86,8 +50,10 @@ namespace Memkit
 		///     The type of pages in the region.
 		/// </summary>
 		public MemoryType Type { get; }
-	}
 
+		public string NativeName => "MEMORY_BASIC_INFORMATION";
+	}
+	
 	/// <summary>
 	///     <a href="https://docs.microsoft.com/en-us/windows/desktop/memory/memory-protection-constants">Doc</a>
 	/// </summary>
@@ -237,22 +203,5 @@ namespace Memkit
 		///     information in the AllocationBase, AllocationProtect, Protect, and Type members is undefined.
 		/// </summary>
 		Free = 0x10000
-	}
-
-	[Flags]
-	public enum ProcessAccess : uint
-	{
-		All                     = 0x1F0FFF,
-		Terminate               = 0x000001,
-		CreateThread            = 0x000002,
-		VmOperation             = 0x00000008,
-		VmRead                  = 0x000010,
-		VmWrite                 = 0x000020,
-		DupHandle               = 0x00000040,
-		CreateProcess           = 0x000080,
-		SetInformation          = 0x00000200,
-		QueryInformation        = 0x000400,
-		QueryLimitedInformation = 0x001000,
-		Synchronize             = 0x00100000
 	}
 }

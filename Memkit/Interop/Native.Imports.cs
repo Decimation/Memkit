@@ -1,13 +1,11 @@
 using System;
-using System.Diagnostics;
 using System.Runtime.InteropServices;
+using Memkit.Utilities;
 
-namespace Memkit
+namespace Memkit.Interop
 {
 	public static partial class Native
 	{
-		private const string KERNEL32_DLL = "Kernel32.dll";
-
 		[DllImport(KERNEL32_DLL, SetLastError = true, PreserveSig = true, EntryPoint = nameof(CloseHandle))]
 		private static extern bool CloseHandleInternal(IntPtr obj);
 
@@ -29,13 +27,13 @@ namespace Memkit
 
 
 		[DllImport(KERNEL32_DLL, CharSet = CharSet.Auto, EntryPoint = nameof(GetModuleHandle))]
-		internal static extern IntPtr GetModuleHandle(string moduleName);
+		private static extern IntPtr GetModuleHandleInternal(string moduleName);
 
 		[DllImport(KERNEL32_DLL, CharSet = CharSet.Ansi, SetLastError = true, EntryPoint = nameof(GetProcAddress))]
-		internal static extern IntPtr GetProcAddress(IntPtr module, string procName);
+		private static extern IntPtr GetProcAddressInternal(IntPtr module, string procName);
 
 		[DllImport(KERNEL32_DLL, CharSet = CharSet.Ansi, SetLastError = true, EntryPoint = nameof(LoadLibrary))]
-		internal static extern IntPtr LoadLibrary(string name);
+		private static extern IntPtr LoadLibraryInternal(string name);
 
 
 		[DllImport(KERNEL32_DLL, EntryPoint = nameof(Mem.ReadProcessMemory))]

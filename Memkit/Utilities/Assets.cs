@@ -1,6 +1,6 @@
 using System.Runtime.CompilerServices;
 
-namespace Memkit
+namespace Memkit.Utilities
 {
 	/// <summary>
 	/// Contains offsets, sizes, and other constants.
@@ -10,15 +10,27 @@ namespace Memkit
 		/// <summary>
 		/// Common value representing an invalid value or a failure
 		/// </summary>
-		internal const int INVALID_VALUE = -1;
+		public const int INVALID_VALUE = -1;
 
-		internal const int BITS_PER_DWORD = 32;
+		public const int BITS_PER_DWORD = 32;
 
 		#region Sizes
 
 		// https://github.com/dotnet/coreclr/blob/master/src/vm/object.h
 
-
+		/// <summary>
+		///     Size of the length field and first character
+		///     <list type="bullet">
+		///         <item>
+		///             <description>+ 2: First character</description>
+		///         </item>
+		///         <item>
+		///             <description>+ 4: String length</description>
+		///         </item>
+		///     </list>
+		/// </summary>
+		public static readonly int StringOverhead = sizeof(char) + sizeof(int);
+		
 		/// <summary>
 		///     Size of the length field and padding (x64)
 		/// </summary>

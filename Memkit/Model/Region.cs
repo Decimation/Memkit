@@ -1,7 +1,9 @@
 using System.Diagnostics;
 using System.Text;
+using Memkit.Interop;
+using Memkit.Pointers;
 
-namespace Memkit
+namespace Memkit.Model
 {
 	public readonly struct Region
 	{

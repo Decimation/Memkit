@@ -1,4 +1,4 @@
-namespace Memkit
+namespace Memkit.Pointers
 {
 	public interface IPointer<T> {}
 }

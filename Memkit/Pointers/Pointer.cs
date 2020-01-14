@@ -1,10 +1,12 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
+using Memkit.Utilities;
 
-namespace Memkit
+namespace Memkit.Pointers
 {
 	/// <summary>
 	///     <para>Represents a native pointer. Equals the size of <see cref="P:System.IntPtr.Size" />.</para>
@@ -131,6 +133,13 @@ namespace Memkit
 			return obj is Pointer<T> pointer && Equals(pointer);
 		}
 
+		public object CastAny(Type type)
+		{
+			var cast = GetType().GetMethods().First(f => f.Name == nameof(Cast) && f.IsGenericMethod);
+			var ptr  = Reflector.CallGeneric(cast, type, this);
+			return ptr;
+		}
+		
 		public override int GetHashCode()
 		{
 			// ReSharper disable once NonReadonlyMemberInGetHashCode
@@ -266,6 +275,7 @@ namespace Memkit
 
 		#region Read / write
 
+		
 		/// <summary>
 		///     Writes a value of type <typeparamref name="T" /> to <see cref="Address" />.
 		/// </summary>
@@ -327,7 +337,28 @@ namespace Memkit
 		}
 
 		
+		#region Any
 
+		private MethodInfo GetMethod(Type t, string name, out object ptr)
+		{
+			ptr = CastAny(t);
+			var fn = ptr.GetType().GetMethod(name);
+			return fn;
+		}
+
+		public void WriteAny(Type type, object value, int elemOffset = OFFSET)
+		{
+			var fn = GetMethod(type, nameof(Write), out var ptr);
+			fn.Invoke(ptr, new[] {value, elemOffset});
+		}
+
+		public object ReadAny(Type type, int elemOffset = OFFSET)
+		{
+			var fn = GetMethod(type, nameof(Read), out var ptr);
+			return fn.Invoke(ptr, new object[] {elemOffset});
+		}
+
+		#endregion
 
 		#region Pointer
 

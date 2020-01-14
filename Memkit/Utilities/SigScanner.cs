@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using Memkit.Model;
+using Memkit.Pointers;
 
-namespace Memkit
+namespace Memkit.Utilities
 {
 	/// <summary>
 	///     A basic sig scanner.
