@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
 using Memkit.Utilities;
-
+#pragma warning disable 8603,8653
 namespace Memkit.Pointers
 {
 	/// <summary>
@@ -339,10 +339,12 @@ namespace Memkit.Pointers
 		
 		#region Any
 
+		
 		private MethodInfo GetMethod(Type t, string name, out object ptr)
 		{
 			ptr = CastAny(t);
 			var fn = ptr.GetType().GetMethod(name);
+			
 			return fn;
 		}
 
@@ -459,5 +461,13 @@ namespace Memkit.Pointers
 		public uint ToUInt32() => (uint) m_value;
 
 		#endregion
+
+
+		public override string ToString()
+		{
+			const string HEX = "X";
+
+			return Address.ToInt64().ToString(HEX);
+		}
 	}
 }

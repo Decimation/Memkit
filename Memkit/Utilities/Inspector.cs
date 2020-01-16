@@ -122,7 +122,7 @@ namespace Memkit.Utilities
 				typeof(U<>).MakeGenericType(t);
 				return true;
 			}
-			catch (Exception e) {
+			catch {
 				return false;
 			}
 		}

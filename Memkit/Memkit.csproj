@@ -14,7 +14,7 @@
     
     <PropertyGroup>
         <PackageId>Memkit</PackageId>
-        <Version>1.1.0</Version>
+        <Version>1.1.1</Version>
         <Authors>Read Stanton (Decimation)</Authors>
         <PackageTags>CLR memory low-level</PackageTags>
         <RepositoryUrl>https://github.com/Decimation/Memkit</RepositoryUrl>
@@ -30,19 +30,6 @@
         </None>
     </ItemGroup>
     
-    <!--
-            C:\Library\Nuget
-            dotnet pack -c Release -o %cd%
-            dotnet nuget push "*.nupkg"
-            
-            del *.nupkg & dotnet pack -c Release -o %cd%
-    -->
     
-    <!-- 
-            https://docs.microsoft.com/en-us/nuget/reference/nuget-config-file#package-source-sections
-            https://docs.microsoft.com/en-us/nuget/reference/nuspec
-            https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-nuget-push
-            https://docs.microsoft.com/en-us/nuget/reference/nuget-config-file
-    -->
 
 </Project>
