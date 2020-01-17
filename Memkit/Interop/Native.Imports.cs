@@ -6,6 +6,36 @@ namespace Memkit.Interop
 {
 	public static partial class Native
 	{
+		[DllImport(KERNEL32_DLL)]
+		public static extern IntPtr OpenProcess(ProcessAccess dwDesiredAccess, bool bInheritHandle, int dwProcessId);
+
+		[DllImport(KERNEL32_DLL)]
+		public static extern IntPtr OpenThread(ThreadAccess dwDesiredAccess, bool bInheritHandle, uint dwThreadId);
+
+		[DllImport(KERNEL32_DLL)]
+		public static extern uint SuspendThread(IntPtr hThread);
+
+		[DllImport(KERNEL32_DLL, SetLastError = true)]
+		public static extern bool GetThreadContext(IntPtr hThread, ref CONTEXT64 lpContext);
+		
+		[DllImport(KERNEL32_DLL, SetLastError = true)]
+		public static extern bool GetThreadContext(IntPtr hThread, ref CONTEXT lpContext);
+		
+		[DllImport(KERNEL32_DLL, SetLastError = true)]
+		public static extern bool SetThreadContext(IntPtr hThread, ref CONTEXT64 lpContext);
+
+		[DllImport(KERNEL32_DLL)]
+		public static extern int ResumeThread(IntPtr hThread);
+
+		[DllImport(KERNEL32_DLL, SetLastError = true, ExactSpelling = true)]
+		public static extern IntPtr VirtualAllocEx(IntPtr hProcess, IntPtr lpAddress, uint dwSize,
+		                                           uint   flAllocationType,
+		                                           uint   flProtect);
+
+		
+
+		#region Private/internal
+
 		[DllImport(KERNEL32_DLL, SetLastError = true, PreserveSig = true, EntryPoint = nameof(CloseHandle))]
 		private static extern bool CloseHandleInternal(IntPtr obj);
 
@@ -44,5 +74,7 @@ namespace Memkit.Interop
 		[DllImport(KERNEL32_DLL, SetLastError = true, EntryPoint = nameof(Mem.WriteProcessMemory))]
 		internal static extern bool WriteProcMemoryInternal(IntPtr proc, IntPtr  baseAddr, IntPtr buffer,
 		                                                    int    size, out int numberBytesWritten);
+
+		#endregion
 	}
 }
