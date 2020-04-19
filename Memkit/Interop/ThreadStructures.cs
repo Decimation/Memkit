@@ -1,4 +1,6 @@
-using System;
+namespace Memkit.Interop
+{
+	using System;
 using System.Runtime.InteropServices;
 
 // ReSharper disable FieldCanBeMadeReadOnly.Global
@@ -276,4 +278,5 @@ namespace Memkit.Interop
 		[MarshalAs(UnmanagedType.ByValArray, SizeConst = 26)]
 		public M128A[] VectorRegister;
 	}
+}
 }

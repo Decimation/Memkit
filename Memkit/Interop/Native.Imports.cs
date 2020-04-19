@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.InteropServices;
+using Memkit.Interop.Memkit.Interop;
 using Memkit.Utilities;
 
 namespace Memkit.Interop
@@ -52,8 +53,8 @@ namespace Memkit.Interop
 		                                                  ref MemoryBasicInfo buffer, int length);
 
 		[DllImport(KERNEL32_DLL, EntryPoint = nameof(VirtualProtect))]
-		private static extern bool VirtualProtectInternal(IntPtr           address,    int                  size,
-		                                                  MemoryProtection newProtect, out MemoryProtection oldProtect);
+		public static extern bool VirtualProtect(IntPtr           address,    int                  size,
+		                                         MemoryProtection newProtect, out MemoryProtection oldProtect);
 
 
 		[DllImport(KERNEL32_DLL, CharSet = CharSet.Auto, EntryPoint = nameof(GetModuleHandle))]

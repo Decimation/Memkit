@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
+using Memkit.Interop;
 using Memkit.Model;
 using Memkit.Pointers;
 
@@ -15,10 +17,26 @@ namespace Memkit.Utilities
 		private readonly Pointer<byte> m_lo;
 
 
-		public SigScanner(Region r)
+		public SigScanner(Region r) : this(r.Low.Copy((int) r.Size), r.Low) { }
+
+		private SigScanner(byte[] buffer, Pointer<byte> lo)
 		{
-			m_buffer = r.Low.Copy((int) r.Size);
-			m_lo     = r.Low;
+			m_buffer = buffer;
+			m_lo     = lo;
+		}
+
+		public static SigScanner CreateRemote(Process proc, ProcessModule module)
+		{
+			var lo   = module.BaseAddress;
+			var size = module.ModuleMemorySize;
+
+			var mem = Mem.ReadProcessMemory(proc, lo, size);
+
+			if (mem == null) {
+				throw new NullReferenceException("Array is null");
+			}
+			
+			return new SigScanner(mem, lo);
 		}
 
 		private bool PatternCheck(int nOffset, IReadOnlyList<byte> arrPattern)

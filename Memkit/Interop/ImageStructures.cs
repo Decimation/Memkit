@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.InteropServices;
+using Memkit.Interop.Memkit.Interop;
 using Memkit.Model;
 using Memkit.Model.Attributes;
 using Memkit.Pointers;

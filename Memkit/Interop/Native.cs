@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using JetBrains.Annotations;
+using Memkit.Interop.Memkit.Interop;
 using Memkit.Model;
 using Memkit.Pointers;
 
@@ -67,9 +68,11 @@ namespace Memkit.Interop
 
 		public static void CloseHandle(Pointer<byte> ptr)
 		{
-			if (CloseHandleInternal(ptr.Address)) {
+			bool b = CloseHandleInternal(ptr.Address);
+			
+			/*if (b) {
 				throw new Win32Exception();
-			}
+			}*/
 		}
 
 		public static MemoryBasicInfo VirtualQuery(Pointer<byte> ptr)
@@ -79,13 +82,7 @@ namespace Memkit.Interop
 			return mbi;
 		}
 
-		public static void VirtualProtect(Pointer<byte>    address, int size,
-		                                  MemoryProtection newProtect)
-		{
-			if (!VirtualProtectInternal(address.Address, size, newProtect, out var oldProtect)) {
-				throw new Win32Exception();
-			}
-		}
+		
 
 		public static IntPtr OpenProcess(Process proc, ProcessAccess flags = ProcessAccess.All) =>
 			OpenProcessInternal(flags, false, proc.Id);

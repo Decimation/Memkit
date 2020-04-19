@@ -113,7 +113,51 @@ namespace Memkit.Utilities
 
 			return Mem.ReadStructure<T>(bytes);
 		}
-		
+
+
+		public static void Hotpatch(Process proc, Pointer<byte> target, Pointer<byte> replacement)
+		{
+			//	uint32_t rel = (char *)replacement - (char *)target - 5;
+			//	union {
+			//		uint8_t bytes[8];
+			//		uint64_t value;
+			//	} instruction       =  { {0xe9, rel >> 0, rel >> 8, rel >> 16, rel >> 24} };
+			//	*(uint64_t *)target = instruction.value;
+
+			int    rel         = (int) (replacement - target - 5);
+			byte[] instruction = {0xE8, (byte) (rel >> 0), (byte) (rel >> 8), (byte) (rel >> 16), (byte) (rel >> 24)};
+
+			//target.WriteAll(instruction);
+
+			Console.WriteLine("rel: {0:X} | instruc: {1:X}", rel, BitConverter.ToInt32(instruction));
+
+
+			Native.VirtualProtect(target.Address, instruction.Length,
+			                      MemoryProtection.ExecuteReadWrite,
+			                      out var old);
+
+
+			WriteProcessMemory(proc, target, instruction);
+
+			Native.VirtualProtect(target.Address, instruction.Length,
+			                      old,
+			                      out _);
+		}
+
+		public static void WriteSafe(Process proc, Pointer<byte> p, byte[] mem)
+		{
+			Native.VirtualProtect(p.Address, mem.Length,
+			                      MemoryProtection.ExecuteReadWrite,
+			                      out var old);
+
+
+			WriteProcessMemory(proc, p, mem);
+
+			Native.VirtualProtect(p.Address, mem.Length,
+			                      old,
+			                      out _);
+		}
+
 		/*[NativeFunction]
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static T ReadFast<T>(void* source, int elemOfs)
@@ -285,7 +329,6 @@ namespace Memkit.Utilities
 
 
 		#region Sizes
-
 
 		public static int QuickSizeOf<T>() => Unsafe.SizeOf<T>();
 
