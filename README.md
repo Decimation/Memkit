@@ -1,3 +1,5 @@
+# This project has been superseded by [Novus](https://github.com/Decimation/Novus)
+
 # Memkit
 [![nuget](https://img.shields.io/nuget/v/Memkit.svg?logo=NuGet)](https://www.nuget.org/packages/Memkit/)
 [![nuget dl](https://img.shields.io/nuget/dt/Memkit.svg?logo=NuGet)](https://www.nuget.org/packages/Memkit/)
